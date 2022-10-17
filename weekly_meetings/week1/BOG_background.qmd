@@ -1,0 +1,209 @@
+---
+title: "Bowdoin Organic Garden Switchgrass Common Garden - Intro"
+author: "Samuel Taylor"
+date: 11^th^ October 2022
+format: revealjs
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(here)
+library(tidyverse)
+```
+
+## Switchgrass
+
+-   Switchgrass (*Panicum virgatum*) is a C~4~ grass native to the tallgrass prairies of North America
+-   Because of its high productivity and broad ecological range, it was a target for biofuel breeding programs responding to the oil crisis of the 1970s, then after 2007 linked with the US Government's Energy Independence and Security Act (EISA)\
+-   EISA mandates to increase cellulosic ethanol production, that supported crop improvement research in switchgrass, have failed, linked with decreased oil prices because of fracking and the ease of producing ethanol from food crops like corn and soyabean grain
+
+## Productivity
+
+-   C~4~ photosynthesis is highly efficient for carbon capture and relatively nitrogen efficient under warm climate, sunny conditions. It is characteristic of some of the most productive grass species found in these habitats, e.g. maize, sugarcane, switchgrass
+-   Switchgrass is perennial, so once established ploughing and re-seeding only needs to happen every few years
+-   As a native species in the great plains, it was proposed that switchgrass for biofuel could be cropped on marginal land as a dual purpose conservation and biofuel crop
+
+## Broad ecological range
+
+Switchgrass is native from Mexico through Canada and was especially abundant through the prairie ecosystems of the US midwest. This broad geographic range is linked with two primary gradients in the physical environment
+
+-   Daylength and growing season differences along the latitudinal gradient (temperate seasonal to sub-tropical)
+-   Rainfall gradients from the dry west, to the wetter east and south
+
+## Ecotypes
+
+Switchgrass as a species has additionally developed ecotypes adapted to specific habitats
+
+-   Lowland switchgrass is found in creek bottoms
+-   Upland switchgrass is on slopes and more exposed sites
+-   Switchgrass is part of a polyploid complex of hybrids (Virgata clade) with the closely related *Panicum amarum* and *Panicum amarulum* which are found on coastal dunes of the Atlantic and Gulf of Mexico coasts
+
+## The Bowdoin Organic Garden Experiment (BOG)
+
+I established this small common garden experiment in 2014, while I was a Visiting Assistant Professor at Bowdoin College, to look at ploidy x ecotype interactions
+
+At the time most studies had compared tetraploid lowlands with octoploid uplands.
+
+I was specifically interested in how tetraploid and octoploid upland plants compared from a physiological perspective.
+
+## Hypotheses
+
+Higher ploidy in octoploid upland populations had previously been linked with greater leaf level photosynthetic rates and slightly reduced biochemical efficiency than tetraploid lowland populations ([Warner et al. 1987](https://academic.oup.com/plphys/article/84/2/461/6082390)).
+
+**1. Is photosynthesis generally higher in octoploids, especially when octoploid and tetraploid uplands are compared?**
+
+I was also interested in whether ploidy-cell-size linkages existed that might cause differences in leaf physiology. In particular:
+
+**2. Does the size of stomata and leaf cells affect leaf gas exchange and is this linked with ecotype or habitat?**
+
+## Hypotheses
+
+It known that local adaptation occurs through the great plains in terms of growing season duration and flowering times. Plants from cold temperate regions tend to emerge later and flower earlier (summarised in [Lowry et al 2012](https://www.journals.uchicago.edu/doi/abs/10.1086/675760), and see [Lowry et al 2019](https://www.pnas.org/doi/full/10.1073/pnas.1821543116)).
+
+At the interspecific level in plant ecology, faster growth tends to be associated with syndromes of performance that include e.g. lower tissue density, lower tissue nitrogen, lower stress tolerance.
+
+**3. Are adaptations to local climate that result in changes to growth duration linked with differences in leaf physiology?**
+
+## Some data and an introduction to BOG switchgrass...
+
+Today's session demonstrates a process for getting data into R, does some wrangling, and produces a plot to demonstrate how seasonal colour changes (Autumn theme :-) ) in the switchgrass plants at BOG fit with the preamble presented so far.
+
+## Importing datasets using `here()`
+
+After James suggested it a couple of years ago, I now often use `here()` to generate relative filepaths within Rstudio projects in a low hassle way.
+
+`here()` provides the filepath used by the current RProject.
+
+```{r, echo = TRUE}
+
+here()
+
+```
+
+adding text lets you specify the full path
+
+```{r}
+
+here("weekly_meetings/week1/BOG_Senescence/BOG_Senescence.xls")
+
+```
+
+------------------------------------------------------------------------
+
+To load the data file assigned to an object I need e.g.
+
+```{r}
+BOG_sen <- readxl::read_excel(here("weekly_meetings/week1/BOG_Senescence.xls"))
+
+head(BOG_sen)
+
+```
+
+You can see the data is for a series of switchgrass 'populations'
+
+Structure in the experimental data is as yet poorly defined because factors are not automatically assigned in tidyverse or current R (historically they were)
+
+------------------------------------------------------------------------
+
+To reveal the structure in the first columns we can do e.g.
+
+```{r}
+
+str(mutate(BOG_sen, across(pop:popblock, as_factor)))
+
+```
+
+-   This reveals that variables headed '419..' are not all reading the same, and their titles are hard to understand
+
+------------------------------------------------------------------------
+
+```{r}
+
+unique(BOG_sen$'41943')
+
+```
+
+This is being treated as character because of a mistake in use of `read_xls`
+
+On top of that, I know these columns are data from different dates, presented in a 'wide' format. They would be better transformed into a long format
+
+------------------------------------------------------------------------
+
+Try again with the import, being more specific
+
+```{r}
+
+BOG_sen <- readxl::read_excel(here("weekly_meetings/week1/BOG_Senescence.xls"),
+                           na = "NA"
+                           ) %>%
+pivot_longer(-(pop:popblock)) %>%
+mutate(across(pop:popblock, as_factor)) %>%
+rename(date = name, senesc = value) %>%
+mutate(date = as.Date(as.numeric(date), origin = "1899-12-30"),
+       day_of_year = julian(date, origin = as.Date("2014-01-01"))
+       )
+          
+head(BOG_sen)
+```
+
+------------------------------------------------------------------------
+
+now to plot the data
+
+```{r}
+
+BOG_sen %>%
+  ggplot(aes(day_of_year, senesc)) +
+  geom_point() +
+  facet_wrap(~pop) +
+  geom_smooth()
+
+
+```
+
+------------------------------------------------------------------------
+
+The file I've been using so far is missing some info about these populations
+
+Let's add data about the ecotypes and ploidy
+
+```{r}
+BOG_sen_details <- left_join(
+  BOG_sen,
+  readxl::read_excel(here("weekly_meetings/week1/BOG_geoloc_ecot_ploid_SaraH.xlsx")) %>%
+    rename(pop = population)
+  )
+
+```
+
+It's also the case that some of the plots here are pseudoreps with respect to the switchgrass populations they represent (plots A and B usually have the same plant split between them), so summarise these away
+
+```{r}
+BOG_sen_summ <- BOG_sen_details %>%
+  select(clone, day_of_year, pop, ecotype, ploidy, lat, lon, senesc) %>%
+  group_by(clone, day_of_year, pop, ecotype, ploidy, lat, lon) %>%
+  summarise(senesc = median(senesc, na.rm = TRUE))
+
+```
+
+------------------------------------------------------------------------
+
+Plot the improved and corrected dataset using information about latitude
+
+```{r}
+BOG_sen_summ %>%
+  ggplot(aes(day_of_year, senesc, colour = lat)) +
+  geom_point() +
+  facet_wrap(~reorder(pop, lat)) +
+  geom_smooth()
+
+```
+
+------------------------------------------------------------------------
+
+## Homework suggestion
+
+We provide the Excel sheet, and you try to amalgamate my code chunks into a script that reads data, formats and cleans it, and produces the same, or an improvement of my plot.
+
+Improve my code and/or substitute methods that you know work for you...
