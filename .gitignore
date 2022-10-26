@@ -2,3 +2,5 @@
 *.js
 *.css
 *.png
+.Rproj.user
+switchgrass.Rproj
