@@ -26,3 +26,5 @@ We love Windows! (MH)
   /          / /         /
  /_,.--:^-._/ /         /
 ^            ^¨¨-.___.:^ 
+
+I love the beautiful artwork  (SM)
