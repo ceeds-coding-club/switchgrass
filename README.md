@@ -11,3 +11,18 @@ Still think PC's are stupid...(LBE)
 If you're reading this, you've pulled ;)  (TL)
 
 God I miss croissants (LLJ)
+
+We love Windows! (MH)
+            ,-~¨^  ^¨-,           _,
+           /          / ;^-._...,¨/
+          /          / /         /
+         /          / /         /
+        /          / /         /
+       /,.-:''-,_ / /         /
+       _,.-:--._ ^ ^:-._ __../
+     /^         / /¨:.._¨__.;
+    /          / /      ^  /
+   /          / /         /
+  /          / /         /
+ /_,.--:^-._/ /         /
+^            ^¨¨-.___.:^ 
