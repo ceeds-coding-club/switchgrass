@@ -16,5 +16,6 @@ We love Windows! (MH) ,-\~¨\^ \^¨-, *, / / ;\^-.*...,¨/ / / / / / / / / / / /
 
 I love the beautiful artwork (SM)
 
-this is terrifying, aaah!! (RK)
+this is terrifying, aaah!! (RK).
+i'm not sure it went through! (RK)
 
