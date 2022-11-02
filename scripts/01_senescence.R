@@ -7,7 +7,7 @@ library(readxl)
 
 #read data
 
-BOG_sen <- read_excel(here("BOG_Senescence/BOG_Senescence.xls"),
+BOG_sen <- read_excel("data/BOG_Senescence.xls",
                               na = "NA"
 ) %>%
   pivot_longer(-(pop:popblock)) %>%
@@ -32,7 +32,7 @@ BOG_sen %>%
 
 BOG_sen_details <- left_join(
   BOG_sen,
-  readxl::read_excel(here("BOG_senescence/BOG_geoloc_ecot_ploid_SaraH.xlsx")) %>%
+  read_excel("data/BOG_geoloc_ecot_ploid_SaraH.xlsx") %>%
     rename(pop = population)
 )
 
