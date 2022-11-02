@@ -1,4 +1,6 @@
-switchgrass
+
+### switchgrass
+
 
 change is the only constant
 
@@ -18,6 +20,10 @@ I love the beautiful artwork (SM)
 
 this is terrifying, aaah!! (RK). i'm not sure it went through! (RK) Yes it did...yay!(RK)
 
+<<<<<<< HEAD
 Trying commit using GitBash on uni laptop (PG)
 
 
+=======
+Trying commit using GitBash on uni laptop (PG) test on RStudio (PG)
+>>>>>>> 2130b67668694938bc474b040a4ad7653473eecf
