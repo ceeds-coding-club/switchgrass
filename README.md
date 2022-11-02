@@ -1,6 +1,6 @@
 switchgrass
 
-use-r collaborative project
+change is the only constant
 
 New text testing commits (JR) again
 
@@ -19,3 +19,5 @@ I love the beautiful artwork (SM)
 this is terrifying, aaah!! (RK). i'm not sure it went through! (RK) Yes it did...yay!(RK)
 
 Trying commit using GitBash on uni laptop (PG)
+
+
