@@ -20,4 +20,4 @@ I love the beautiful artwork (SM)
 
 this is terrifying, aaah!! (RK). i'm not sure it went through! (RK) Yes it did...yay!(RK)
 
-Trying commit using GitBash on uni laptop (PG)
+Trying commit using GitBash on uni laptop (PG) test on RStudio (PG)
