@@ -5,6 +5,9 @@ library(tidyverse)
 library(here)
 library(readxl)
 
+theme_set(theme_classic())   # getting rid of ggplot defaults (e.g. grey background) (MH)
+
+
 #read data
 
 BOG_sen <- read_excel("data/BOG_Senescence.xls",
@@ -47,7 +50,9 @@ BOG_sen_summ <- BOG_sen_details %>%
 
 BOG_sen_summ %>%
   ggplot(aes(day_of_year, senesc, colour = lat)) +
-  geom_point() +
+  geom_point(alpha=0.5) +                            # alpha = making points slightly transparent (MH)
   facet_wrap(~reorder(pop, lat)) +
-  geom_smooth()
+  geom_smooth() +
+  xlab("Day of year") + ylab("Senescence (units?)") +# customise axis titles (MH)
+  labs(colour = "Latitude")                          # specifying legend title (MH)
 
