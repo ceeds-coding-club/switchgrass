@@ -56,3 +56,15 @@ BOG_sen_summ %>%
   xlab("Day of year") + ylab("Senescence (units?)") +# customise axis titles (MH)
   labs(colour = "Latitude")                          # specifying legend title (MH)
 
+
+## JR - looking at latitudinal spread of ploidy (change colour = ploidy)
+## ploidy 8 more common in high latitude vs. ploidy 4 in low latitude..confounding?
+## Also need to fix ploidy = NA for one population
+BOG_sen_summ %>%
+  ggplot(aes(day_of_year, senesc, colour = ploidy)) +
+  geom_point(alpha=0.5) +                            # alpha = making points slightly transparent (MH)
+  facet_wrap(~reorder(pop, lat)) +
+  geom_smooth() +
+  xlab("Day of year") + ylab("Senescence (units?)") +# customise axis titles
+  labs(colour = "Ploidy")                          # specifying legend title
+
