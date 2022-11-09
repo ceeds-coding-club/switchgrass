@@ -99,3 +99,4 @@ BOG_sen <- read_excel("data/BOG_Senescence.xls",
 
 head(BOG_sen)
 
+# Checking if I can push right (TL)
