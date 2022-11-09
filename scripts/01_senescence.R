@@ -2,6 +2,7 @@
 
 #Selected 
 library(tidyverse)
+library(here)
 library(readxl)
 
 theme_set(theme_classic())   # getting rid of ggplot defaults (e.g. grey background) (MH)
@@ -19,6 +20,7 @@ BOG_sen <- read_excel("data/BOG_Senescence.xls",
   )
 
 head(BOG_sen)
+summary(BOG_sen)
 
 #plot data
 
@@ -31,14 +33,16 @@ BOG_sen %>%
 
 #read switchgrass population information, source/ploidy/etc.
 
-BOG_sen_details <- left_join(BOG_sen,read_excel("data/BOG_geoloc_ecot_ploid_SaraH.xlsx") %>%
+BOG_sen_details <- left_join(
+  BOG_sen,
+  read_excel("data/BOG_geoloc_ecot_ploid_SaraH.xlsx") %>%
     rename(pop = population)
 )
 
 #summarise out pseudoreps (subplots a & b)
 
 BOG_sen_summ <- BOG_sen_details %>%
-  dplyr::select(clone, day_of_year, pop, ecotype, ploidy, lat, lon, senesc) %>%
+  select(clone, day_of_year, pop, ecotype, ploidy, lat, lon, senesc) %>%
   group_by(clone, day_of_year, pop, ecotype, ploidy, lat, lon) %>%
   summarise(senesc = median(senesc, na.rm = TRUE))
 
@@ -64,6 +68,14 @@ BOG_sen_summ %>%
   xlab("Day of year") + ylab("Senescence (units?)") +# customise axis titles
   labs(colour = "Ploidy")                          # specifying legend title
 
+## Explore the effect of ecotype  
+BOG_sen_summ %>%
+  ggplot(aes(day_of_year, senesc, colour = pop)) +
+  geom_point(alpha=0.5) +                            
+  facet_wrap(~ecotype) +
+  geom_smooth() +
+  xlab("Day of year") + ylab("Senescence (units?)") +
+  labs(colour = "pop")                          
 
 ## LBE - Let's break this down first! R olden times - before Tidyverse
 
@@ -89,3 +101,4 @@ BOG_sen <- read_excel("data/BOG_Senescence.xls",na = "NA") %>%
 
 head(BOG_sen)
 
+# Checking if I can push right (TL)
