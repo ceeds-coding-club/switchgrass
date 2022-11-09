@@ -102,3 +102,4 @@ BOG_sen <- read_excel("data/BOG_Senescence.xls",na = "NA") %>%
 head(BOG_sen)
 
 # Checking if I can push right (TL)
+# Now checking here my pushshshs (JG)
