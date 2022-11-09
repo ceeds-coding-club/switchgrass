@@ -7,9 +7,7 @@ library(readxl)
 
 theme_set(theme_classic())   # getting rid of ggplot defaults (e.g. grey background) (MH)
 
-
 #read data
-
 BOG_sen <- read_excel("data/BOG_Senescence.xls",
                               na = "NA"
 ) %>%
@@ -67,4 +65,27 @@ BOG_sen_summ %>%
   geom_smooth() +
   xlab("Day of year") + ylab("Senescence (units?)") +# customise axis titles
   labs(colour = "Ploidy")                          # specifying legend title
+
+
+## LBE - Let's break this down first! R olden times - before Tidyverse
+
+# object_1 <- read.csv(~"filepath")
+# object_2 <- function1(data=object_1, "blah blah blah")
+# object_3 <- function2(data=object_2, "blah blah blah")
+# object_4 <- function3(data=object_3, "blah blah blah")
+
+## Basic pipe structure breakdown (in session)
+
+#read data (LBE - streamline in session)
+BOG_sen <- read_excel("data/BOG_Senescence.xls",
+                      na = "NA"
+) %>%
+  pivot_longer(-(pop:popblock)) %>%
+  mutate(across(pop:popblock, as_factor)) %>%
+  rename(date = name, senesc = value) %>%
+  mutate(date = as.Date(as.numeric(date), origin = "1899-12-30"),
+         day_of_year = julian(date, origin = as.Date("2014-01-01"))
+  )
+
+head(BOG_sen)
 
