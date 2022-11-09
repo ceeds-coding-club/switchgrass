@@ -2,7 +2,6 @@
 
 #Selected 
 library(tidyverse)
-library(here)
 library(readxl)
 
 theme_set(theme_classic())   # getting rid of ggplot defaults (e.g. grey background) (MH)
@@ -32,16 +31,14 @@ BOG_sen %>%
 
 #read switchgrass population information, source/ploidy/etc.
 
-BOG_sen_details <- left_join(
-  BOG_sen,
-  read_excel("data/BOG_geoloc_ecot_ploid_SaraH.xlsx") %>%
+BOG_sen_details <- left_join(BOG_sen,read_excel("data/BOG_geoloc_ecot_ploid_SaraH.xlsx") %>%
     rename(pop = population)
 )
 
 #summarise out pseudoreps (subplots a & b)
 
 BOG_sen_summ <- BOG_sen_details %>%
-  select(clone, day_of_year, pop, ecotype, ploidy, lat, lon, senesc) %>%
+  dplyr::select(clone, day_of_year, pop, ecotype, ploidy, lat, lon, senesc) %>%
   group_by(clone, day_of_year, pop, ecotype, ploidy, lat, lon) %>%
   summarise(senesc = median(senesc, na.rm = TRUE))
 
@@ -77,14 +74,16 @@ BOG_sen_summ %>%
 
 ## Basic pipe structure breakdown (in session)
 
+new_object <- original_object %>% 
+  verb1() %>% 
+  verb2() %>% 
+  verb3()
+
 #read data (LBE - streamline in session)
-BOG_sen <- read_excel("data/BOG_Senescence.xls",
-                      na = "NA"
-) %>%
-  pivot_longer(-(pop:popblock)) %>%
-  mutate(across(pop:popblock, as_factor)) %>%
-  rename(date = name, senesc = value) %>%
-  mutate(date = as.Date(as.numeric(date), origin = "1899-12-30"),
+BOG_sen <- read_excel("data/BOG_Senescence.xls",na = "NA") %>%
+  pivot_longer(cols = -(pop:popblock),names_to = "date", values_to = "senesc") %>%
+  mutate(across(pop:popblock, as_factor),
+         date = as.Date(as.numeric(date), origin = "1899-12-30"),
          day_of_year = julian(date, origin = as.Date("2014-01-01"))
   )
 
