@@ -20,6 +20,7 @@ BOG_sen <- read_excel("data/BOG_Senescence.xls",
   )
 
 head(BOG_sen)
+summary(BOG_sen)
 
 #plot data
 
@@ -67,6 +68,14 @@ BOG_sen_summ %>%
   xlab("Day of year") + ylab("Senescence (units?)") +# customise axis titles
   labs(colour = "Ploidy")                          # specifying legend title
 
+## Explore the effect of ecotype  
+BOG_sen_summ %>%
+  ggplot(aes(day_of_year, senesc, colour = pop)) +
+  geom_point(alpha=0.5) +                            
+  facet_wrap(~ecotype) +
+  geom_smooth() +
+  xlab("Day of year") + ylab("Senescence (units?)") +
+  labs(colour = "pop")                          
 
 ## LBE - Let's break this down first! R olden times - before Tidyverse
 
