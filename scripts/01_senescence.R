@@ -7,6 +7,7 @@ library(readxl)
 
 theme_set(theme_classic())   # getting rid of ggplot defaults (e.g. grey background) (MH)
 
+
 #read data
 BOG_sen <- read_excel("data/BOG_Senescence.xls",
                               na = "NA"
