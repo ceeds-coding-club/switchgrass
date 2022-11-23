@@ -20,3 +20,25 @@ emerg_long<-emerg %>%
   group_by(block,type) %>% 
   pivot_longer(cols = (new051508:new061512),
                names_to = "interval", values_to = "emerge") 
+
+
+
+
+
+##### Leo #####
+
+emerg_ed <- emerg %>% 
+              group_by(block,type) %>% 
+              pivot_longer(cols = (3:13),
+                           names_to = "interval", values_to = "emerge") %>% 
+              mutate(cat = substr(interval, 1,3),
+                     date = parse_date(substr(interval, 4, 9), format = "%m%y%d"),
+                     popblock = toupper(paste0(type, block)))
+
+# rearranging columns
+emerg_ed <- emerg_ed[,c(1:3,7,5,6,4)]
+
+  
+
+
+
