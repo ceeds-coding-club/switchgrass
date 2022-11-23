@@ -27,3 +27,8 @@ view(BOG_emerge)
 BOG_emerg <- read_excel("data/BOG_Emergence.xls",na = "NA")
 
 # Rucha
+
+BOG_emerge <- read_excel("data/BOG_Emergence.xls",na = "NA") %>%
+  group_by(block,type) %>% 
+  pivot_longer(cols = (new051508:new061512),
+               names_to = "interval", values_to = "emerge") 
