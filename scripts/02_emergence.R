@@ -1,22 +1,8 @@
-
-
-## Read in Emergence
+## Read in Emergence dataset
 source('scripts/01_senescence.R')
 
-## Old = baseline of stem counts
-## New = change in stem counts taken at 3 days
-emerg<-read_excel('data/BOG_Emergence.xls')
-
-## Tim's slot
-library(tidyverse)
-library(readxl)
-BOG_emerge <- read_excel("data/BOG_Emergence.xls",na = "NA")
-head(BOG_emerge)
-view(BOG_emerge)
-
-### Leonardo's slot
-BOG_emerg <- read_excel("data/BOG_Emergence.xls",na = "NA")
-
+# Block = same as BOG_sen_details, but lower case letter
+# Type = same as BOG_sen_details, but lower case letters
 
 #read data
 BOG_emr <- read_excel("data/BOG_Emergence.xls", na = "NA") %>%
@@ -33,6 +19,20 @@ summary(BOG_sen)
 
 
 BOG_emerge <- read_excel("data/BOG_Emergence.xls",na = "NA") %>%
+
+## Old = baseline of stem counts (with date format MM/YY/DD)
+## New = change in stem counts taken at 3 days (with date format MM/YY/DD)
+emerg<-read_excel('data/BOG_Emergence.xls', na = "NA")
+  
+## Things to do:
+# trying to replicate the format of BOG_sen (created in scripts/01_scenescence.R)
+# clean the ID columns (block, type)
+# create columns for date and count
+# this will probably need pivot_longer and verbs in the stringr package
+head(BOG_sen)
+head(emerg)
+
+emerg_long<-emerg %>% 
   group_by(block,type) %>% 
   pivot_longer(cols = (new051508:new061512),
                names_to = "interval", values_to = "emerge") 
