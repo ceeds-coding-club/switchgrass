@@ -72,4 +72,9 @@ BOG_sen_summ %>%
   facet_wrap(~ecotype) +
   geom_smooth() +
   xlab("Day of year") + ylab("Senescence (units?)") +
-  labs(colour = "pop")                          
+  labs(colour = "pop")  
+
+
+##### RK
+BOG_emerge <- read_excel("data/BOG_Emergence.xls",na = "NA")
+
