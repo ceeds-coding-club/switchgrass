@@ -1,16 +1,11 @@
-## Read in Emergence
-
-## Tim's slot
-
-
-
-### Leonardo's slot
-BOG_emerg <- read_excel("data/BOG_Emergence.xls",na = "NA")
-
-## Sam
 
 
 ## Read in Emergence
+source('scripts/01_senescence.R')
+
+## Old = baseline of stem counts
+## New = change in stem counts taken at 3 days
+emerg<-read_excel('data/BOG_Emergence.xls')
 
 ## Tim's slot
 library(tidyverse)
@@ -19,12 +14,7 @@ BOG_emerge <- read_excel("data/BOG_Emergence.xls",na = "NA")
 head(BOG_emerge)
 view(BOG_emerge)
 
-
 ### Leonardo's slot
+BOG_emerg <- read_excel("data/BOG_Emergence.xls",na = "NA")
 
-
-## Sam
-
-
->>>>>>> 8ffddb14b1c7286b81847732a50377ca5a814d7c
 # Rucha
