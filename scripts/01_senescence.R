@@ -65,8 +65,9 @@ BOG_sen_summ %>%
   geom_point(alpha=0.5) +                            # alpha = making points slightly transparent (MH)
   facet_wrap(~reorder(pop, lat)) +
   geom_smooth() +
-  xlab("Day of year") + ylab("Senescence (units?)") +# customise axis titles
-  labs(colour = "Ploidy")                          # specifying legend title
+  xlab("Day of year") + ylab("Senescence") +# customise axis titles
+  labs(colour = "Ploidy")    +                      # specifying legend title
+  scale_y_continuous(breaks=seq(0,10, 2))
 
 ## Explore the effect of ecotype  
 BOG_sen_summ %>%
