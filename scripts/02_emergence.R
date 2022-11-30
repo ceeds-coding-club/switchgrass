@@ -27,18 +27,28 @@ emerg_long<-emerg %>%
 
 ##### Leo #####
 
-emerg_ed <- emerg %>% 
-              group_by(block,type) %>% 
+alldata.ed <- emerg %>% 
               pivot_longer(cols = (3:13),
-                           names_to = "interval", values_to = "emerge") %>% 
-              mutate(cat = substr(interval, 1,3),
-                     date = parse_date(substr(interval, 4, 9), format = "%m%y%d"),
-                     popblock = toupper(paste0(type, block)))
-
-# rearranging columns
-emerg_ed <- emerg_ed[,c(1:3,7,5,6,4)]
-
+                           names_to = "interval", 
+                           values_to = "emerge") %>%                                 #pivot data to long format
+              mutate(cat = substr(interval, 1,3),                                    #using the first 3 character of column name as a category: old & new
+                     date = parse_date(substr(interval, 4, 9), format = "%m%y%d"),   #using the last 6 character of column name and converting to date format
+                     day_of_year = as.numeric(format(date, "%j")),                   #data of the year (1-365) based on date column
+                     type = toupper(type), block = toupper(block),
+                     clone = paste0(type, substr(block, 1, 1)),
+                     popblock = paste0(type, block)) %>%                             #adding var 'popblock' as in BOG_sen
+              rename(plot = block) %>%  rename(pop = type) %>%                       #rename columns to match with BOG_sen
+              full_join(BOG_sen) %>%                                                 #senesc data is from 2014 and emerg data is from 2014. lots of NAs were included when merged
+              left_join((BOG_sen_details %>% select(popblock, ecotype, lat, lon)))
   
+  
+# rearranging columns
+alldata.ed <- alldata.ed[,c(2,1,9,8,6,10,4,7,5,11:13)]
+
+# checking
+head(alldata.ed)
+
+
 
 
 
