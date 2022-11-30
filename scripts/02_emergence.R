@@ -33,12 +33,12 @@ alldata.ed <- emerg %>%
                            values_to = "emerge") %>%                                 #pivot data to long format
               mutate(cat = substr(interval, 1,3),                                    #using the first 3 character of column name as a category: old & new
                      date = parse_date(substr(interval, 4, 9), format = "%m%y%d"),   #using the last 6 character of column name and converting to date format
-                     day_of_year = as.numeric(format(date, "%j")),                   #data of the year (1-365) based on date column
-                     type = toupper(type), block = toupper(block),
+                     day_of_year = as.numeric(format(date, "%j")),                   #date of the year (1-365) based on date column
+                     type = toupper(type), block = toupper(block),                   #editions to match data between data.frames
                      clone = paste0(type, substr(block, 1, 1)),
                      popblock = paste0(type, block)) %>%                             #adding var 'popblock' as in BOG_sen
               rename(plot = block) %>%  rename(pop = type) %>%                       #rename columns to match with BOG_sen
-              full_join(BOG_sen) %>%                                                 #senesc data is from 2014 and emerg data is from 2014. lots of NAs were included when merged
+              full_join(BOG_sen) %>%                                                 #senesc data is from 2014 and emerg data is from 2015. lots of NAs were included when merged
               left_join((BOG_sen_details %>% select(popblock, ecotype, lat, lon)))
   
   
