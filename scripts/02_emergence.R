@@ -20,11 +20,11 @@ summary(BOG_sen)
 # Rucha
 
 
-BOG_emerge <- read_excel("data/BOG_Emergence.xls",na = "NA") %>%
+BOG_emerge <- read_excel("data/BOG_Emergence.xls",na = "NA")
 
 ## Old = baseline of stem counts (with date format MM/YY/DD)
 ## New = change in stem counts taken at 3 days (with date format MM/YY/DD)
-emerg<-read_excel('data/BOG_Emergence.xls', na = "NA")
+emerg <- read_excel('data/BOG_Emergence.xls', na = "NA")
   
 ## Things to do:
 # trying to replicate the format of BOG_sen (created in scripts/01_scenescence.R)
@@ -57,8 +57,7 @@ alldata.ed <- emerg %>%
                      popblock = paste0(type, block)) %>%                             #adding var 'popblock' as in BOG_sen
               rename(plot = block) %>%  rename(pop = type) %>%                       #rename columns to match with BOG_sen
               full_join(BOG_sen) %>%                                                 #senesc data is from 2014 and emerg data is from 2015. lots of NAs were included when merged
-              left_join((BOG_sen_details %>% select(popblock, ecotype, lat, lon) %>% 
-                           distinct()))
+              left_join((BOG_sen_details %>% select(popblock, ecotype, lat, lon)))
   
   
 # rearranging columns
