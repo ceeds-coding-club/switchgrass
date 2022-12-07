@@ -57,7 +57,8 @@ alldata.ed <- emerg %>%
                      popblock = paste0(type, block)) %>%                             #adding var 'popblock' as in BOG_sen
               rename(plot = block) %>%  rename(pop = type) %>%                       #rename columns to match with BOG_sen
               full_join(BOG_sen) %>%                                                 #senesc data is from 2014 and emerg data is from 2015. lots of NAs were included when merged
-              left_join((BOG_sen_details %>% select(popblock, ecotype, lat, lon)))
+              left_join((BOG_sen_details %>% select(popblock, ecotype, lat, lon) %>% 
+                           distinct()))
   
   
 # rearranging columns
