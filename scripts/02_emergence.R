@@ -43,7 +43,7 @@ emerg_long<-emerg %>%
 
 
 
-##### Leo #####
+##### Leo 23/11/2022 #####
 
 alldata.ed <- emerg %>% 
               pivot_longer(cols = (3:13),
@@ -120,3 +120,33 @@ BOG_eme_summ %>%
          ) +
   scale_colour_gradient(low = "orange", high = "blue") + #colours to imply temperature ~ lat
   scale_fill_discrete(type = c(gray(0.7), gray(1)))
+
+
+
+
+##### Leo 08/12/2022 #####
+
+# trying to plot senescence and emerge in the same graph
+# i don't know if this makes sense... 
+# but i just wanted to test if i could plot two y-axis in the same graph, while using facet_wrap()
+# i adapted this solution from stack overflow:
+# https://stackoverflow.com/questions/65122051/plot-with-geom-smooth-multiple-colours-double-y-axis-with-four-variables-in
+
+scaleFactor <- max(BOG_eme_summ$tillers) / max(BOG_sen_summ$senesc)
+
+  ggplot() +
+  geom_point(data=BOG_eme_summ, aes(x= day_of_year, y= tillers, colour = lat, fill = old_new), shape = 21) +
+  geom_smooth(data=BOG_eme_summ, aes(x= day_of_year, y= tillers), se = FALSE, show.legend = FALSE) +  
+  geom_point(data=BOG_sen_summ, aes(x= day_of_year, y= senesc * scaleFactor, colour = lat)) + 
+  geom_smooth(data=BOG_sen_summ, aes(x= day_of_year, y= senesc * scaleFactor), se = FALSE, show.legend = FALSE) +  
+  scale_y_continuous(name="Tillers", sec.axis=sec_axis(~./scaleFactor, name="Senescence")) +
+  scale_colour_gradient(low = "orange", high = "blue") +
+  scale_fill_discrete(type = c(gray(0.7), gray(1)))+
+  facet_wrap(~ reorder(pop, lat)) +
+  xlab("Day of year")
+  labs(colour = "latitude of origin",
+       fill = "new versus previous year's growth")
+  
+  
+  
+  
