@@ -1,5 +1,7 @@
 ##make sure workspace is set up with the senescence dataset and packages
 # we can potentially replace this with a master script later...
+
+#Feb 2023: Sam tidied up this code by commenting out to run clean from source 
 source('scripts/01_senescence.R')
 
 ## Read in Emergence dataset
@@ -7,37 +9,35 @@ source('scripts/01_senescence.R')
 # Type = same as BOG_sen_details, but lower case letters
 
 #read data
-BOG_emr <- read_excel("data/BOG_Emergence.xls", na = "NA") %>%
-  pivot_longer(cols = -(pop:popblock),names_to = "date", values_to = "senesc") %>%
-  mutate(across(pop:popblock, as_factor),
-         date = as.Date(as.numeric(date), origin = "1899-12-30"),
-         day_of_year = julian(date, origin = as.Date("2014-01-01"))
-  )
+#BOG_emr <- read_excel("data/BOG_Emergence.xls", na = "NA") %>%
+#  pivot_longer(cols = -c("pop", "popblock"), names_to = "date", values_to = "senesc") %>%
+#  mutate(across(pop:popblock, as_factor),
+#         date = as.Date(as.numeric(date), origin = "1899-12-30"),
+#         day_of_year = julian(date, origin = as.Date("2014-01-01"))
+#  )
 
-head(BOG_sen)
-summary(BOG_sen)
+#head(BOG_sen)
+#summary(BOG_sen)
 
 # Rucha
 
-
-BOG_emerge <- read_excel("data/BOG_Emergence.xls",na = "NA")
-
 ## Old = baseline of stem counts (with date format MM/YY/DD)
 ## New = change in stem counts taken at 3 days (with date format MM/YY/DD)
+# BOG_eme <- read_excel("data/BOG_Emergence.xls", na = "NA")
 emerg <- read_excel('data/BOG_Emergence.xls', na = "NA")
-  
-## Things to do:
-# trying to replicate the format of BOG_sen (created in scripts/01_scenescence.R)
-# clean the ID columns (block, type)
-# create columns for date and count
-# this will probably need pivot_longer and verbs in the stringr package
+#   
+# ## Things to do:
+# # trying to replicate the format of BOG_sen (created in scripts/01_scenescence.R)
+# # clean the ID columns (block, type)
+# # create columns for date and count
+# # this will probably need pivot_longer and verbs in the stringr package
 head(BOG_sen)
 head(emerg)
-
-emerg_long<-emerg %>% 
-  group_by(block,type) %>% 
-  pivot_longer(cols = (new051508:new061512),
-               names_to = "interval", values_to = "emerge") 
+# 
+# emerg_long<-emerg %>% 
+#   group_by(block, type) %>% 
+#   pivot_longer(cols = (new051508:new061512),
+#                names_to = "interval", values_to = "emerge") 
 
 
 
@@ -45,26 +45,26 @@ emerg_long<-emerg %>%
 
 ##### Leo 23/11/2022 #####
 
-alldata.ed <- emerg %>% 
-              pivot_longer(cols = (3:13),
-                           names_to = "interval", 
-                           values_to = "emerge") %>%                                 #pivot data to long format
-              mutate(cat = substr(interval, 1,3),                                    #using the first 3 character of column name as a category: old & new
-                     date = parse_date(substr(interval, 4, 9), format = "%m%y%d"),   #using the last 6 character of column name and converting to date format
-                     day_of_year = as.numeric(format(date, "%j")),                   #date of the year (1-365) based on date column
-                     type = toupper(type), block = toupper(block),                   #editions to match data between data.frames
-                     clone = paste0(type, substr(block, 1, 1)),
-                     popblock = paste0(type, block)) %>%                             #adding var 'popblock' as in BOG_sen
-              rename(plot = block) %>%  rename(pop = type) %>%                       #rename columns to match with BOG_sen
-              full_join(BOG_sen) %>%                                                 #senesc data is from 2014 and emerg data is from 2015. lots of NAs were included when merged
-              left_join((BOG_sen_details %>% select(popblock, ecotype, lat, lon)))
-  
-  
-# rearranging columns
-alldata.ed <- alldata.ed[,c(2,1,9,8,6,10,4,7,5,11:13)]
-
-# checking
-head(alldata.ed)
+# alldata.ed <- emerg %>% 
+#               pivot_longer(cols = (3:13),
+#                            names_to = "interval", 
+#                            values_to = "emerge") %>%                                 #pivot data to long format
+#               mutate(cat = substr(interval, 1,3),                                    #using the first 3 character of column name as a category: old & new
+#                      date = parse_date(substr(interval, 4, 9), format = "%m%y%d"),   #using the last 6 character of column name and converting to date format
+#                      day_of_year = as.numeric(format(date, "%j")),                   #date of the year (1-365) based on date column
+#                      type = toupper(type), block = toupper(block),                   #editions to match data between data.frames
+#                      clone = paste0(type, substr(block, 1, 1)),
+#                      popblock = paste0(type, block)) %>%                             #adding var 'popblock' as in BOG_sen
+#               rename(plot = block) %>%  rename(pop = type) %>%                       #rename columns to match with BOG_sen
+#               full_join(BOG_sen) %>%                                                 #senesc data is from 2014 and emerg data is from 2015. lots of NAs were included when merged
+#               left_join((BOG_sen_details %>% select(popblock, ecotype, lat, lon)))
+#   
+#   
+# # rearranging columns
+# alldata.ed <- alldata.ed[,c(2,1,9,8,6,10,4,7,5,11:13)]
+# 
+# # checking
+# head(alldata.ed)
 
 
 ##### Sam, working from Leo's code #####
