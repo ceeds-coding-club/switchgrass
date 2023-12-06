@@ -1,22 +1,22 @@
 ---
 title: "Bowdoin Organic Garden Switchgrass Common Garden - Intro"
 author: "Samuel Taylor"
-date: 11^th^ October 2022
+date: "`r Sys.Date()`"
 format: revealjs
 editor: visual
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(here)
 library(tidyverse)
+library(readxl)
 ```
 
 ## Switchgrass
 
 -   Switchgrass (*Panicum virgatum*) is a C~4~ grass native to the tallgrass prairies of North America
--   Because of its high productivity and broad ecological range, it was a target for biofuel breeding programs responding to the oil crisis of the 1970s, then after 2007 linked with the US Government's Energy Independence and Security Act (EISA)\
--   EISA mandates to increase cellulosic ethanol production, that supported crop improvement research in switchgrass, have failed, linked with decreased oil prices because of fracking and the ease of producing ethanol from food crops like corn and soyabean grain
+-   Because of its high productivity and broad ecological range, it was a target for biofuel breeding programs responding to the oil crisis of the 1970s, then after 2007 linked with the US Government's Energy Independence and Security Act (EISA)
+-   EISA failed to increase cellulosic ethanol production, because fracking pushed down oil prices and producing ethanol from food crops like corn and soybean grain remained easier. In 2023, new interest is developing, e.g. to meet net zero targets by producing CO~2~ neutral aviation fuel.
 
 ## Productivity
 
@@ -67,42 +67,33 @@ At the interspecific level in plant ecology, faster growth tends to be associate
 
 ## Some data and an introduction to BOG switchgrass...
 
-Today's session demonstrates a process for getting data into R, does some wrangling, and produces a plot to demonstrate how seasonal colour changes (Autumn theme :-) ) in the switchgrass plants at BOG fit with the preamble presented so far.
+Today's session demonstrates a process for getting data into R, does some wrangling, and produces a plot to demonstrate how seasonal colour changes in the switchgrass plants at BOG are consistent with local adaptation.
 
-## Importing datasets using `here()`
-
-After James suggested it a couple of years ago, I now often use `here()` to generate relative filepaths within Rstudio projects in a low hassle way.
-
-`here()` provides the filepath used by the current RProject.
-
-```{r, echo = TRUE}
-
-here()
-
-```
-
-adding text lets you specify the full path
-
-```{r}
-
-here("weekly_meetings/week1/BOG_Senescence/BOG_Senescence.xls")
-
-```
-
-------------------------------------------------------------------------
+## Some data and an introduction to BOG switchgrass...
 
 To load the data file assigned to an object I need e.g.
 
-```{r}
-BOG_sen <- readxl::read_excel(here("weekly_meetings/week1/BOG_Senescence.xls"))
+```{r, results = 'hide'}
 
+BOG_sen <- read_excel("BOG_Senescence.xls")
 head(BOG_sen)
 
 ```
 
-You can see the data is for a series of switchgrass 'populations'
+In updating this code I learned that by default .\*md formats in RStudio treat their location as the path. If you want to use e.g. the `getwd()` of the console/.Rproj instead you need to specify: [link](https://bookdown.org/yihui/rmarkdown-cookbook/working-directory.html))
 
-Structure in the experimental data is as yet poorly defined because factors are not automatically assigned in tidyverse or current R (historically they were)
+------------------------------------------------------------------------
+
+You can see that the data is for a series of switchgrass 'populations'
+
+```{r echo = FALSE}
+
+BOG_sen <- read_excel("BOG_Senescence.xls")
+head(BOG_sen)
+
+```
+
+Structure in the experimental data is as yet poorly defined because factors are not automatically assigned
 
 ------------------------------------------------------------------------
 
@@ -110,13 +101,17 @@ To reveal the structure in the first columns we can do e.g.
 
 ```{r}
 
-str(mutate(BOG_sen, across(pop:popblock, as_factor)))
+BOG_sen |>
+  mutate(across(pop:popblock, as_factor)) |>
+  str()
 
 ```
 
--   This reveals that variables headed '419..' are not all reading the same, and their titles are hard to understand
+-   This reveals that variables headed '419..' are not all reading as the same 'type', and their titles are hard to understand
 
 ------------------------------------------------------------------------
+
+The below is being treated as character because of a mistake in use of `read_xls` around NA characters
 
 ```{r}
 
@@ -124,24 +119,20 @@ unique(BOG_sen$'41943')
 
 ```
 
-This is being treated as character because of a mistake in use of `read_xls`
-
 On top of that, I know these columns are data from different dates, presented in a 'wide' format. They would be better transformed into a long format
 
 ------------------------------------------------------------------------
 
-Try again with the import, being more specific
+Try again with the import, being more specific and converting the 0-10 senescence scale (a qualitative score of the proportion of the canopy that is senescent) to 0-1
 
 ```{r}
 
-BOG_sen <- readxl::read_excel(here("weekly_meetings/week1/BOG_Senescence.xls"),
-                           na = "NA"
-                           ) %>%
-pivot_longer(-(pop:popblock)) %>%
-mutate(across(pop:popblock, as_factor)) %>%
-rename(date = name, senesc = value) %>%
+BOG_sen <- read_excel("BOG_Senescence.xls", na = "NA") |>
+pivot_longer(-(pop:popblock), names_to = "date", values_to = "senesc") |>
+mutate(across(pop:popblock, as_factor)) |>
 mutate(date = as.Date(as.numeric(date), origin = "1899-12-30"),
-       day_of_year = julian(date, origin = as.Date("2014-01-01"))
+       day_of_year = julian(date, origin = as.Date("2014-01-01")),
+       senesc = senesc / 10
        )
           
 head(BOG_sen)
@@ -149,61 +140,49 @@ head(BOG_sen)
 
 ------------------------------------------------------------------------
 
-now to plot the data
-
-```{r}
-
-BOG_sen %>%
-  ggplot(aes(day_of_year, senesc)) +
-  geom_point() +
-  facet_wrap(~pop) +
-  geom_smooth()
-
-
-```
-
-------------------------------------------------------------------------
-
 The file I've been using so far is missing some info about these populations
 
-Let's add data about the ecotypes and ploidy
+Let's add data about the ecotypes and ploidy by merging with another file where those are recorded
 
 ```{r}
-BOG_sen_details <- left_join(
-  BOG_sen,
-  readxl::read_excel(here("weekly_meetings/week1/BOG_geoloc_ecot_ploid_SaraH.xlsx")) %>%
-    rename(pop = population)
-  )
+
+BOG_sen_details <- read_excel("BOG_geoloc_ecot_ploid_SaraH.xlsx") |>
+  rename(pop = population) |>
+  right_join(BOG_sen)
 
 ```
 
-It's also the case that some of the plots here are pseudoreps with respect to the switchgrass populations they represent (plots A and B usually have the same plant split between them), so summarise these away
+It's also the case that some of the plots here are pseudoreps with respect to the switchgrass populations they represent (plots A and B usually have the same clonal individual split between them), so we should summarise these away
 
 ```{r}
-BOG_sen_summ <- BOG_sen_details %>%
-  select(clone, day_of_year, pop, ecotype, ploidy, lat, lon, senesc) %>%
-  group_by(clone, day_of_year, pop, ecotype, ploidy, lat, lon) %>%
+BOG_sen_summ <- BOG_sen_details |>
+  select(clone, day_of_year, pop, ecotype, ploidy, lat, lon, senesc) |>
+  group_by(clone, day_of_year, pop, ecotype, ploidy, lat, lon) |>
   summarise(senesc = median(senesc, na.rm = TRUE))
 
 ```
 
 ------------------------------------------------------------------------
 
-Plot the improved and corrected dataset using information about latitude
+Now we can plot the dataset, and show that the progression of senescence in different genotypes is consistent with their latitude of origin despite their having been grown in a single location
 
 ```{r}
-BOG_sen_summ %>%
+Fig <- BOG_sen_summ |>
   ggplot(aes(day_of_year, senesc, colour = lat)) +
+  geom_smooth(colour = gray(0.3)) +
   geom_point() +
-  facet_wrap(~reorder(pop, lat)) +
-  geom_smooth()
+  facet_wrap(~ reorder(pop, lat), dir = "h", as.table = FALSE) +
+  scale_colour_gradient(low = "darkorange", high = "darkblue") +
+  xlab("day of year") +
+  ylab("proportion of canopy that was senescent") +
+  ylim(0, 1) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 
 ```
 
 ------------------------------------------------------------------------
 
-## Homework suggestion
+```{r}
+Fig
 
-We provide the Excel sheet, and you try to amalgamate my code chunks into a script that reads data, formats and cleans it, and produces the same, or an improvement of my plot.
-
-Improve my code and/or substitute methods that you know work for you...
+```
