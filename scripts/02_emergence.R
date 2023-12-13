@@ -143,10 +143,6 @@ scaleFactor <- max(BOG_eme_summ$tillers) / max(BOG_sen_summ$senesc)
   scale_colour_gradient(low = "orange", high = "blue") +
   scale_fill_discrete(type = c(gray(0.7), gray(1)))+
   facet_wrap(~ reorder(pop, lat)) +
-  xlab("Day of year")
+  xlab("Day of year") +
   labs(colour = "latitude of origin",
        fill = "new versus previous year's growth")
-  
-  
-  
-  
