@@ -6,8 +6,6 @@ library(readxl)
 
 theme_set(theme_classic())   # getting rid of ggplot defaults (e.g. grey background) (MH)
 
-library(cowplot)
-
 #read data
 BOG_sen <- read_excel("data/BOG_Senescence.xls",na = "NA") %>%
   pivot_longer(cols = -(pop:popblock),names_to = "date", values_to = "senesc") %>%
@@ -73,8 +71,3 @@ BOG_sen_summ %>%
   geom_smooth() +
   xlab("Day of year") + ylab("Senescence (units?)") +
   labs(colour = "pop")  
-
-
-##### RK
-BOG_emerge <- read_excel("data/BOG_Emergence.xls",na = "NA")
-
