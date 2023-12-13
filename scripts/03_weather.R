@@ -5,8 +5,24 @@
 # - min
 # mean (max+min/2)
 
+#There are four separate weather station outputs...
+# and there may be some overlapping timestamps
+list.files("data", pattern = "BOG.+10313906")
+
+#here's a bit of code to read in the data and do a simple merge...
+# but
+#  naming is terrible
+#  it's not clean
+#  and it's not summarised...
+#pull the repository, edit locally, push changes
+BOG_met <- map(list.files("data", pattern = "BOG.+10313906"),
+    \(x) read.csv(str_c("data/", x), row.names = 1, skip = 1)
+    ) |>
+  reduce(full_join)
+
+
 # 2) plot the temperature series against data from 02_emergence
-# goal is to visualise whether switchgess genotypes differ in daily mean T
+# goal is to visualise whether switchgrass genotypes differ in daily mean T
 # at which emergence happens,
 # and establish if the temperature dataset overlaps with the emergence data
 # sufficiently to determine this
