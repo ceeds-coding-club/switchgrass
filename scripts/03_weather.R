@@ -24,6 +24,8 @@ BOG_met <- map(list.files("data", pattern = "BOG.+10313906"),
 
 head(BOG_met)
 
+#make a mess
+
 # 2) plot the temperature series against data from 02_emergence
 # goal is to visualise whether switchgrass genotypes differ in daily mean T
 # at which emergence happens,
