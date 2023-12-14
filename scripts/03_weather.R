@@ -20,9 +20,10 @@ list.files("data", pattern = "BOG.+10313906")
 BOG_met <- map(list.files("data", pattern = "BOG.+10313906"),
     \(x) read.csv(str_c("data/", x), row.names = 1, skip = 1)
     ) |>
-  reduce(full_join)
+  reduce(full_join) %>% 
+  janitor::clean_names()
 
-head(BOG_met)
+names(BOG_met)
 
 # 2) plot the temperature series against data from 02_emergence
 # goal is to visualise whether switchgrass genotypes differ in daily mean T
