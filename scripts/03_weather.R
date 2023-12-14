@@ -1,3 +1,5 @@
+library(tidyverse)
+
 #Challenge -
 # 1) merge BOG_..._DegDays.csv weather station outputs
 # and summarise to produce a single time series of daily values:
@@ -20,6 +22,7 @@ BOG_met <- map(list.files("data", pattern = "BOG.+10313906"),
     ) |>
   reduce(full_join)
 
+head(BOG_met)
 
 # 2) plot the temperature series against data from 02_emergence
 # goal is to visualise whether switchgrass genotypes differ in daily mean T
