@@ -21,8 +21,10 @@ BOG_met <- map(list.files("data", pattern = "BOG.+10313906"),
     \(x) read.csv(str_c("data/", x), row.names = 1, skip = 1)
     ) |>
   reduce(full_join) %>% 
+  do something r like
   janitor::clean_names()
 
+## will this break this script ??
 names(BOG_met)
 
 # 2) plot the temperature series against data from 02_emergence
