@@ -20,9 +20,12 @@ list.files("data", pattern = "BOG.+10313906")
 BOG_met <- map(list.files("data", pattern = "BOG.+10313906"),
     \(x) read.csv(str_c("data/", x), row.names = 1, skip = 1)
     ) |>
-  reduce(full_join)
+  reduce(full_join) %>% 
+  do something r like
+  janitor::clean_names()
 
-head(BOG_met)
+## will this break this script ??
+names(BOG_met)
 
 #make a mess
 
